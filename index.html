@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Game Hitung Cepat Buat Arka</title>
+  <style>
+    :root { --bg: #0f0c29; --card: #1b1b2f; --primary: #e94560; --text: #e9e9e9; --success: #00d2ad; --danger: #ff4d4d; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    
+    /* FIX LAYAR PUTIH BAWAH: Gunakan html background dan 100dvh */
+    html { background-color: var(--bg); }
+    body { 
+      font-family: 'Segoe UI', Roboto, sans-serif; 
+      background: var(--bg); 
+      color: var(--text); 
+      margin: 0; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100dvh; /* Dynamic viewport height untuk HP */
+      overflow-y: auto; 
+    }
+    
+    .container { 
+      background: var(--card); 
+      width: 100%; 
+      max-width: 450px; 
+      padding: 20px; 
+      border-radius: 24px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+      text-align: center; 
+      margin: 15px; 
+      position: relative; /* Untuk posisi Overlay Pause */
+      overflow: hidden;
+    }
+    
+    .hidden { display: none !important; }
+    h2 { color: #f1c40f; font-size: 1.4rem; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Form Styling */
+    .form-group { margin-bottom: 15px; text-align: left; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 15px; }
+    label { display: block; font-weight: bold; margin-bottom: 8px; color: #bdc3c7; font-size: 0.85rem; }
+    input[type="number"], select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; font-size: 1rem; }
+    
+    .grid-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .check-item { display: flex; align-items: center; background: #2a2a40; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; }
+    .check-item input { margin-right: 8px; width: 16px; height: 16px; }
+    .span-2 { grid-column: span 2; }
+
+    button.btn-main { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 15px; font-size: 1.2rem; cursor: pointer; font-weight: bold; margin-top: 10px; box-shadow: 0 4px 0 #a02040; transition: 0.1s; }
+    button.btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #a02040; }
+
+    /* Game UI */
+    .header-game { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    #label-soal { font-weight: bold; color: #bdc3c7; }
+    
+    .timer-container { display: flex; align-items: center; gap: 10px; }
+    #btn-pause { background: rgba(255,255,255,0.1); border: none; border-radius: 8px; color: white; font-size: 1.2rem; padding: 8px 12px; cursor: pointer; }
+    #timer { font-size: 3.5rem; font-weight: 900; color: #f1c40f; text-shadow: 0 0 15px rgba(241, 196, 15, 0.4); transition: color 0.3s;}
+    
+    .display-angka { font-size: 3.2rem; font-weight: 800; margin: 15px 0; line-height: 1.1; color: #fff; }
+    
+    #jawaban-display { font-size: 2.5rem; background: #000; border: 3px solid var(--primary); border-radius: 15px; padding: 10px; margin-bottom: 15px; min-height: 70px; color: #fff; display: flex; align-items: center; justify-content: center; letter-spacing: 2px; }
+
+    /* Virtual Numpad */
+    .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .num-btn { background: #34495e; color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.5rem; font-weight: bold; cursor: pointer; transition: 0.1s; }
+    .num-btn:active { background: var(--primary); transform: scale(0.95); }
+    .num-btn.action { background: #576574; }
+
+    /* Pause Overlay (Mencegah nyontek) */
+    #pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 12, 41, 0.95); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+    /* Recap Table */
+    .scroll-table { overflow-y: auto; max-height: 250px; margin-top: 15px; border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; background: #222; }
+    th, td { padding: 10px; border-bottom: 1px solid #333; text-align: center; font-size: 0.8rem; }
+    th { position: sticky; top: 0; background: var(--card); }
+    .benar { color: var(--success); font-weight: bold;}
+    .salah { color: var(--danger); font-weight: bold;}
+  </style>
+</head>
+<body>
+
+  <div id="screen-menu" class="container">
+    <h2>🚀 Hitung Cepat Arka</h2>
+    
+    <div class="form-group">
+      <label>Musik Latar</label>
+      <select id="set-music">
+        <option value="none">Tanpa Musik</option>
+        <option value="upbeat" selected>Ceria (Retro Game)</option>
+        <option value="tense">Menegangkan (Drone)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Jenis Operasi & Nilai</label>
+      <div class="grid-options">
+        <label class="check-item"><input type="checkbox" name="ops" value="+" checked> + Tambah</label>
+        <label class="check-item"><input type="checkbox" name="ops" value="-"> - Kurang</label>
+        <label class="check-item"><input type="checkbox" name="ops" value="x"> x Kali</label>
+        <label class="check-item"><input type="checkbox" name="ops" value=":"> : Bagi</label>
+        
+        <label class="check-item"><input type="checkbox" name="val" value="satuan" checked> Satuan</label>
+        <label class="check-item"><input type="checkbox" name="val" value="puluhan"> Puluhan</label>
+        <label class="check-item span-2"><input type="checkbox" name="val" value="ratusan"> Ratusan</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Aturan & Fitur Spesial</label>
+      <div class="grid-options">
+        <label class="check-item span-2" style="background: #a02040;"><input type="checkbox" id="anti-minus" checked> 🛡️ Cegah Hasil Minus</label>
+        <label class="check-item span-2" style="background: #27ae60;"><input type="checkbox" id="allow-pause" checked> ⏸️ Izinkan Jeda (Pause)</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="grid-options">
+        <div><label>Baris</label><input type="number" id="set-baris" value="3" min="2"></div>
+        <div><label>Soal</label><input type="number" id="set-jumlah" value="5"></div>
+        <div class="span-2"><label>Waktu Per Soal (Detik)</label><input type="number" id="set-waktu" value="10"></div>
+      </div>
+    </div>
+
+    <button class="btn-main" onclick="mulaiGame()">MULAI BERMAIN</button>
+  </div>
+
+  <div id="screen-game" class="container hidden">
+    
+    <div id="pause-overlay" class="hidden">
+      <h1 style="color: #f1c40f; font-size: 2.5rem; letter-spacing: 2px;">JEDA</h1>
+      <p style="color: #bdc3c7; margin-bottom: 30px;">Waktu dan soal dibekukan sementara.</p>
+      <button class="btn-main" style="width: 80%; background: var(--success); box-shadow: 0 4px 0 #1e8449;" onclick="togglePause()">▶️ LANJUTKAN MAIN</button>
+    </div>
+
+    <div class="header-game">
+      <span id="label-soal">Soal 1/5</span>
+      <div class="timer-container">
+        <button id="btn-pause" class="hidden" onclick="togglePause()">⏸️</button>
+        <span id="timer">10</span>
+      </div>
+    </div>
+    
+    <div id="display-soal" class="display-angka"></div>
+    <div id="jawaban-display">?</div>
+
+    <div class="numpad">
+      <button class="num-btn" onclick="pressNum(1)">1</button>
+      <button class="num-btn" onclick="pressNum(2)">2</button>
+      <button class="num-btn" onclick="pressNum(3)">3</button>
+      <button class="num-btn" onclick="pressNum(4)">4</button>
+      <button class="num-btn" onclick="pressNum(5)">5</button>
+      <button class="num-btn" onclick="pressNum(6)">6</button>
+      <button class="num-btn" onclick="pressNum(7)">7</button>
+      <button class="num-btn" onclick="pressNum(8)">8</button>
+      <button class="num-btn" onclick="pressNum(9)">9</button>
+      <button class="num-btn action" onclick="pressNum('-')">-</button>
+      <button class="num-btn" onclick="pressNum(0)">0</button>
+      <button class="num-btn action" onclick="pressNum('del')">⌫</button>
+      <button class="num-btn action span-2" style="background: var(--success);" onclick="cekJawaban()">OK / JAWAB</button>
+    </div>
+  </div>
+
+  <div id="screen-recap" class="container hidden">
+    <h2>🏆 Hasil Arka</h2>
+    <h1 id="final-score" style="margin:0; font-size: 3.5rem;">0</h1>
+    <div class="scroll-table">
+      <table>
+        <thead><tr><th>Soal</th><th>Kunci</th><th>Arka</th><th>Status</th></tr></thead>
+        <tbody id="recap-body"></tbody>
+      </table>
+    </div>
+    <button class="btn-main" onclick="mainLagi()">MAIN LAGI</button>
+  </div>
+
+  <script>
+    let config = {};
+    let state = { current: 0, skor: 0, rekap: [], input: "", isPaused: false };
+    let timerInterval;
+    
+    // API Layar Penuh (Fullscreen)
+    function enterFullScreen() {
+      let doc = document.documentElement;
+      if (doc.requestFullscreen) doc.requestFullscreen().catch(()=>{});
+      else if (doc.mozRequestFullScreen) doc.mozRequestFullScreen().catch(()=>{});
+      else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen().catch(()=>{});
+      else if (doc.msRequestFullscreen) doc.msRequestFullscreen().catch(()=>{});
+    }
+
+    function exitFullScreen() {
+      if (document.exitFullscreen) {
+        if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+      }
+    }
+
+    // --- AUDIO ENGINE ---
+    let audioCtx;
+    let bgmIntervalId;
+    let nextNoteTime = 0;
+    let currentNote = 0;
+    let notes = [];
+    let tempo = 120;
+    
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playTick(isLast) {
+      if (!audioCtx || state.isPaused) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(isLast ? 1200 : 800, audioCtx.currentTime); 
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.1);
+    }
+
+    function scheduleNote(beatNumber, time) {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = config.music === 'tense' ? 'sawtooth' : 'sine';
+      osc.frequency.value = notes[beatNumber];
+      
+      gain.gain.setValueAtTime(config.music === 'tense' ? 0.04 : 0.05, time); 
+      gain.gain.exponentialRampToValueAtTime(0.001, time + (config.music === 'tense' ? 1.0 : 0.3));
+      
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(time);
+      osc.stop(time + (config.music === 'tense' ? 1.0 : 0.3));
+    }
+
+    function scheduler() {
+      while (nextNoteTime < audioCtx.currentTime + 0.1) {
+        scheduleNote(currentNote, nextNoteTime);
+        nextNoteTime += (60.0 / tempo);
+        currentNote = (currentNote + 1) % notes.length;
+      }
+    }
+
+    function startBGM(type) {
+      if (bgmIntervalId) clearInterval(bgmIntervalId);
+      if (type === 'none') return;
+
+      if (type === 'upbeat') { notes = [523.25, 659.25, 783.99, 1046.50]; tempo = 240; } 
+      else if (type === 'tense') { notes = [100, 105, 100, 95]; tempo = 80; }
+
+      currentNote = 0;
+      nextNoteTime = audioCtx.currentTime + 0.1;
+      bgmIntervalId = setInterval(scheduler, 25);
+    }
+
+    function stopBGM() {
+      if (bgmIntervalId) clearInterval(bgmIntervalId);
+    }
+    // --- END AUDIO ---
+
+    // Fungsi Pause
+    function togglePause() {
+      if (!config.allowPause) return;
+      
+      state.isPaused = !state.isPaused;
+      const overlay = document.getElementById('pause-overlay');
+      const btnPause = document.getElementById('btn-pause');
+
+      if (state.isPaused) {
+        overlay.classList.remove('hidden');
+        btnPause.innerText = '▶️';
+        if (audioCtx) audioCtx.suspend(); // Bekukan semua suara
+      } else {
+        overlay.classList.add('hidden');
+        btnPause.innerText = '⏸️';
+        if (audioCtx) audioCtx.resume(); // Lanjutkan suara
+      }
+    }
+
+    // Numpad
+    function pressNum(val) {
+      if (state.isPaused) return; // Kunci tombol saat pause
+      if (val === 'del') state.input = state.input.slice(0, -1);
+      else if (val === '-') { if (state.input === "") state.input = "-"; } 
+      else { if (state.input.length < 6) state.input += val; }
+      document.getElementById('jawaban-display').innerText = state.input || "?";
+    }
+
+    function getSelected(name) {
+      return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
+    }
+
+    function mulaiGame() {
+      enterFullScreen(); // Otomatis full screen saat main
+      initAudio(); 
+      
+      config = {
+        baris: parseInt(document.getElementById('set-baris').value),
+        ops: getSelected('ops'),
+        val: getSelected('val'),
+        antiMinus: document.getElementById('anti-minus').checked,
+        allowPause: document.getElementById('allow-pause').checked,
+        jumlah: parseInt(document.getElementById('set-jumlah').value),
+        waktu: parseInt(document.getElementById('set-waktu').value),
+        music: document.getElementById('set-music').value
+      };
+
+      if (config.ops.length === 0 || config.val.length === 0) {
+        alert("Pilih minimal satu Operasi dan satu Nilai Tempat!");
+        return;
+      }
+
+      state = { current: 0, skor: 0, rekap: [], input: "", isPaused: false };
+      
+      // Tampilkan tombol Pause jika diizinkan
+      const btnPause = document.getElementById('btn-pause');
+      if (config.allowPause) { btnPause.classList.remove('hidden'); btnPause.innerText = '⏸️'; } 
+      else { btnPause.classList.add('hidden'); }
+
+      document.getElementById('screen-menu').classList.add('hidden');
+      document.getElementById('screen-game').classList.remove('hidden');
+      
+      startBGM(config.music);
+      lanjutSoal();
+    }
+
+    function generateNumber() {
+      const type = config.val[Math.floor(Math.random() * config.val.length)];
+      if (type === 'satuan') return Math.floor(Math.random() * 9) + 1;
+      if (type === 'puluhan') return Math.floor(Math.random() * 90) + 10;
+      if (type === 'ratusan') return Math.floor(Math.random() * 900) + 100;
+    }
+
+    function formatTampil(angka) { return angka < 0 ? `(${angka})` : angka; }
+
+    function buatSoal() {
+      let runningTotal = generateNumber();
+      let displayHtml = `${formatTampil(runningTotal)}`;
+      let detailSoal = `${formatTampil(runningTotal)}`;
+
+      for (let i = 1; i < config.baris; i++) {
+        const op = config.ops[Math.floor(Math.random() * config.ops.length)];
+        let num = generateNumber();
+        
+        if (op === ':') {
+          runningTotal = runningTotal * num;
+          displayHtml = `${formatTampil(runningTotal)}<br>: ${formatTampil(num)}`;
+          detailSoal = `${formatTampil(runningTotal)} : ${formatTampil(num)}`;
+          runningTotal = runningTotal / num;
+        } else if (op === 'x') {
+          displayHtml += `<br>x ${formatTampil(num)}`;
+          detailSoal += ` x ${formatTampil(num)}`;
+          runningTotal *= num;
+        } else if (op === '-') {
+          if (config.antiMinus && num > runningTotal) {
+            if (runningTotal <= 0) {
+              displayHtml += `<br>+ ${formatTampil(num)}`;
+              detailSoal += ` + ${formatTampil(num)}`;
+              runningTotal += num;
+              continue;
+            } else { num = Math.floor(Math.random() * runningTotal) + 1; }
+          }
+          displayHtml += `<br>- ${formatTampil(num)}`;
+          detailSoal += ` - ${formatTampil(num)}`;
+          runningTotal -= num;
+        } else {
+          displayHtml += `<br>+ ${formatTampil(num)}`;
+          detailSoal += ` + ${formatTampil(num)}`;
+          runningTotal += num;
+        }
+      }
+      return { html: displayHtml, total: runningTotal, detail: detailSoal };
+    }
+
+    let soalAktif;
+
+    function lanjutSoal() {
+      state.current++;
+      if (state.current > config.jumlah) {
+        tampilkanRekap();
+        return;
+      }
+      state.input = "";
+      document.getElementById('jawaban-display').innerText = "?";
+      document.getElementById('label-soal').innerText = `Soal ${state.current}/${config.jumlah}`;
+      
+      const timerEl = document.getElementById('timer');
+      timerEl.style.color = "#f1c40f"; 
+      
+      soalAktif = buatSoal();
+      document.getElementById('display-soal').innerHTML = soalAktif.html;
+      startTimer();
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      let sisa = config.waktu;
+      const timerEl = document.getElementById('timer');
+      timerEl.innerText = sisa;
+      
+      timerInterval = setInterval(() => {
+        if (state.isPaused) return; // Bekukan logika pengurangan saat di-pause
+        
+        sisa--;
+        timerEl.innerText = sisa;
+        
+        if (sisa <= 5 && sisa > 0) {
+          timerEl.style.color = "var(--danger)";
+          playTick(false);
+        }
+        if (sisa <= 0) {
+          clearInterval(timerInterval);
+          playTick(true); 
+          cekJawaban(true);
+        }
+      }, 1000);
+    }
+
+    function cekJawaban(timeout = false) {
+      if (state.isPaused) return; // Cegah submit saat pause
+      clearInterval(timerInterval);
+      
+      const userJawab = state.input === "" ? null : parseInt(state.input);
+      const benar = userJawab === soalAktif.total;
+      if (benar) state.skor++;
+
+      state.rekap.push({
+        detail: soalAktif.detail,
+        kunci: soalAktif.total,
+        user: timeout ? "Habis" : (userJawab === null ? "?" : userJawab),
+        status: benar ? "Benar" : "Salah"
+      });
+
+      document.getElementById('jawaban-display').innerText = benar ? "✔ BENAR" : "❌ SALAH";
+      document.getElementById('jawaban-display').style.color = benar ? "var(--success)" : "var(--danger)";
+      
+      setTimeout(() => {
+        document.getElementById('jawaban-display').style.color = "#fff";
+        lanjutSoal();
+      }, 800);
+    }
+
+    function tampilkanRekap() {
+      stopBGM(); 
+      exitFullScreen(); // Keluar dari fullscreen saat selesai
+      document.getElementById('screen-game').classList.add('hidden');
+      document.getElementById('screen-recap').classList.remove('hidden');
+      
+      const skorAkhir = Math.round((state.skor / config.jumlah) * 100);
+      document.getElementById('final-score').innerText = skorAkhir;
+      document.getElementById('final-score').style.color = skorAkhir >= 70 ? 'var(--success)' : 'var(--danger)';
+      
+      let html = '';
+      state.rekap.forEach(r => {
+        html += `<tr><td>${r.detail}</td><td>${r.kunci}</td><td>${r.user}</td><td class="${r.status.toLowerCase()}">${r.status}</td></tr>`;
+      });
+      document.getElementById('recap-body').innerHTML = html;
+    }
+
+    function mainLagi() {
+      document.getElementById('screen-recap').classList.add('hidden');
+      document.getElementById('screen-menu').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
