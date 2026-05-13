@@ -53,19 +53,46 @@
     button.btn-main { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 15px; font-size: 1.2rem; cursor: pointer; font-weight: bold; margin-top: 10px; box-shadow: 0 4px 0 #a02040; transition: 0.1s; }
     button.btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #a02040; }
 
-    .header-game { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    /* PENGATURAN UI GAME AGAR TIDAK SCROLL */
+    #screen-game {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      max-height: 95dvh; /* Kunci ukuran tidak melebihi tinggi layar HP */
+      padding: 15px 20px; /* Sedikit pangkas padding agar lega */
+      margin: 10px;
+    }
+
+    .header-game { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; flex-shrink: 0; }
     #label-soal { font-weight: bold; color: #bdc3c7; }
     
     .timer-container { display: flex; align-items: center; gap: 10px; }
     #btn-pause { background: rgba(255,255,255,0.1); border: none; border-radius: 8px; color: white; font-size: 1.2rem; padding: 8px 12px; cursor: pointer; }
-    #timer { font-size: 3.5rem; font-weight: 900; color: #f1c40f; text-shadow: 0 0 15px rgba(241, 196, 15, 0.4); transition: color 0.3s;}
+    #timer { font-size: 3rem; font-weight: 900; color: #f1c40f; text-shadow: 0 0 15px rgba(241, 196, 15, 0.4); transition: color 0.3s;}
     
-    .display-angka { font-size: 3.2rem; font-weight: 800; margin: 15px 0; line-height: 1.1; color: #fff; }
-    
-    #jawaban-display { font-size: 2.5rem; background: #000; border: 3px solid var(--primary); border-radius: 15px; padding: 10px; margin-bottom: 15px; min-height: 70px; color: #fff; display: flex; align-items: center; justify-content: center; letter-spacing: 2px; }
+    /* Wadah khusus soal agar dinamis mengambil sisa ruang kosong */
+    .soal-wrapper {
+      flex-grow: 1; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin: 5px 0;
+    }
 
-    .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
-    .num-btn { background: #34495e; color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.5rem; font-weight: bold; cursor: pointer; transition: 0.1s; }
+    .display-angka { 
+      font-weight: 800; 
+      line-height: 1.1; 
+      color: #fff; 
+      margin: 0;
+      text-align: center;
+      transition: font-size 0.2s ease-in-out; /* Efek transisi ukuran angka halus */
+    }
+    
+    #jawaban-display { font-size: 2.2rem; background: #000; border: 3px solid var(--primary); border-radius: 12px; padding: 5px; margin-bottom: 5px; min-height: 60px; color: #fff; display: flex; align-items: center; justify-content: center; letter-spacing: 2px; flex-shrink: 0; }
+
+    .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; flex-shrink: 0; }
+    .num-btn { background: #34495e; color: white; border: none; padding: 12px; border-radius: 10px; font-size: 1.4rem; font-weight: bold; cursor: pointer; transition: 0.1s; }
     .num-btn:active { background: var(--primary); transform: scale(0.95); }
     .num-btn.action { background: #576574; }
 
@@ -156,7 +183,10 @@
       </div>
     </div>
     
-    <div id="display-soal" class="display-angka"></div>
+    <div class="soal-wrapper">
+      <div id="display-soal" class="display-angka"></div>
+    </div>
+    
     <div id="jawaban-display">?</div>
 
     <div class="numpad">
@@ -342,7 +372,6 @@
     function formatTampil(angka) { return angka < 0 ? `(${angka})` : angka; }
     function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
-    // Logika Spesifik: Pengecekan Ketersediaan Manik Sempoa (Rumus Sederhana)
     function isSederhana(curr, num, isAdd) {
       let ct = Math.floor(curr / 5), cb = curr % 5;
       let nt = Math.floor(num / 5), nb = num % 5;
@@ -351,7 +380,6 @@
     }
 
     function buatSoal() {
-      // Penyesuaian Panjang Baris
       let barisTarget = config.baris;
       if (config.mode !== 'custom') {
           if (config.diff === 'easy') barisTarget = Math.max(3, config.baris);
@@ -368,12 +396,10 @@
         for (let i = 1; i < barisTarget; i++) {
           let op = Math.random() > 0.5 ? '+' : '-';
           let validNums = [];
-          
           for (let n = 1; n <= 9; n++) {
             if (op === '+' && isSederhana(total, n, true) && total + n <= 9) validNums.push(n);
             if (op === '-' && isSederhana(total, n, false) && total - n >= 0) validNums.push(n);
           }
-          
           if (validNums.length === 0) {
             op = op === '+' ? '-' : '+';
             for (let n = 1; n <= 9; n++) {
@@ -381,7 +407,6 @@
               if (op === '-' && isSederhana(total, n, false) && total - n >= 0) validNums.push(n);
             }
           }
-          
           let num = validNums.length > 0 ? validNums[getRandomInt(0, validNums.length - 1)] : 0;
           if (num > 0) {
             displayHtml += `<br>${op} ${formatTampil(num)}`;
@@ -389,7 +414,7 @@
             total = op === '+' ? total + num : total - num;
           }
         }
-        return { html: displayHtml, total: total, detail: detailSoal };
+        return { html: displayHtml, total: total, detail: detailSoal, barisAkhir: barisTarget };
       }
 
       // BAB 2: TEMAN KECIL
@@ -401,31 +426,21 @@
         for (let i = 1; i < barisTarget; i++) {
           let op = Math.random() > 0.5 ? '+' : '-';
           let num = 0;
-          
-          // ANTI MINUS KETAT BAB 2
           if (op === '-') {
-            if (total <= 0) {
-              op = '+';
-              num = getRandomInt(1, 9);
-            } else {
-              num = getRandomInt(1, total);
-            }
+            if (total <= 0) { op = '+'; num = getRandomInt(1, 9); } 
+            else { num = getRandomInt(1, total); }
           } else {
             let maxBisaDitambah = 9 - total;
-            if (maxBisaDitambah <= 0) { 
-              op = '-'; 
-              num = getRandomInt(1, total); 
-            } 
+            if (maxBisaDitambah <= 0) { op = '-'; num = getRandomInt(1, total); } 
             else { num = getRandomInt(1, maxBisaDitambah); }
           }
-          
           if (num > 0) {
               displayHtml += `<br>${op} ${formatTampil(num)}`;
               detailSoal += ` ${op} ${formatTampil(num)}`;
               total = op === '+' ? total + num : total - num;
           }
         }
-        return { html: displayHtml, total: total, detail: detailSoal };
+        return { html: displayHtml, total: total, detail: detailSoal, barisAkhir: barisTarget };
       }
 
       // BAB 3 & 4: TEMAN BESAR & GABUNGAN
@@ -438,31 +453,22 @@
           let op = Math.random() > 0.5 ? '+' : '-';
           let minVal = 1;
           if (config.mode === 'bab4' && config.diff === 'hard' && op === '+') minVal = 6; 
-          
           let num = getRandomInt(minVal, 9);
-          
-          // ANTI MINUS KETAT BAB 3 & 4
           if (op === '-') {
-            if (total <= 0) {
-               op = '+';
-               num = getRandomInt(minVal, 9);
-            } else if (num > total) {
-               num = getRandomInt(1, total);
-            }
+            if (total <= 0) { op = '+'; num = getRandomInt(minVal, 9); } 
+            else if (num > total) { num = getRandomInt(1, total); }
           }
-          
           displayHtml += `<br>${op} ${formatTampil(num)}`;
           detailSoal += ` ${op} ${formatTampil(num)}`;
           total = op === '+' ? total + num : total - num;
         }
-        return { html: displayHtml, total: total, detail: detailSoal };
+        return { html: displayHtml, total: total, detail: detailSoal, barisAkhir: barisTarget };
       }
 
       // BAB 5: DUA DIGIT (Puluhan)
       if (config.mode === 'bab5') {
         let minV = 10;
         let maxV = config.diff === 'easy' ? 30 : (config.diff === 'medium' ? 60 : 99);
-        
         let total = getRandomInt(minV, maxV);
         let displayHtml = formatTampil(total);
         let detailSoal = formatTampil(total);
@@ -470,22 +476,15 @@
         for (let i = 1; i < barisTarget; i++) {
           let op = Math.random() > 0.5 ? '+' : '-';
           let num = getRandomInt(minV, maxV);
-          
-          // ANTI MINUS KETAT BAB 5
           if (op === '-') {
-            if (total < minV) {
-               op = '+';
-               num = getRandomInt(minV, maxV);
-            } else if (num > total) {
-               num = getRandomInt(minV, total);
-            }
+            if (total < minV) { op = '+'; num = getRandomInt(minV, maxV); } 
+            else if (num > total) { num = getRandomInt(minV, total); }
           }
-          
           displayHtml += `<br>${op} ${formatTampil(num)}`;
           detailSoal += ` ${op} ${formatTampil(num)}`;
           total = op === '+' ? total + num : total - num;
         }
-        return { html: displayHtml, total: total, detail: detailSoal };
+        return { html: displayHtml, total: total, detail: detailSoal, barisAkhir: barisTarget };
       }
 
       // MODE CUSTOM BEBAS
@@ -514,7 +513,6 @@
           detailSoal += ` x ${formatTampil(num)}`;
           runningTotal *= num;
         } else if (op === '-') {
-          // ANTI MINUS CUSTOM
           if (config.antiMinus) {
             if (runningTotal <= 0) {
               displayHtml += `<br>+ ${formatTampil(num)}`;
@@ -534,7 +532,7 @@
           runningTotal += num;
         }
       }
-      return { html: displayHtml, total: runningTotal, detail: detailSoal };
+      return { html: displayHtml, total: runningTotal, detail: detailSoal, barisAkhir: config.baris };
     }
 
     let soalAktif;
@@ -550,7 +548,20 @@
       timerEl.style.color = "#f1c40f"; 
       
       soalAktif = buatSoal();
-      document.getElementById('display-soal').innerHTML = soalAktif.html;
+      
+      // AUTO RESIZE FONT BERDASARKAN JUMLAH BARIS
+      let b = soalAktif.barisAkhir;
+      let fSize = "3.2rem";
+      if (b >= 9) fSize = "1.5rem";
+      else if (b >= 7) fSize = "1.8rem";
+      else if (b >= 6) fSize = "2.1rem";
+      else if (b >= 5) fSize = "2.4rem";
+      else if (b >= 4) fSize = "2.8rem";
+      
+      const displayEl = document.getElementById('display-soal');
+      displayEl.style.fontSize = fSize;
+      displayEl.innerHTML = soalAktif.html;
+      
       startTimer();
     }
 
