@@ -37,7 +37,6 @@
     .hidden { display: none !important; }
     h2 { color: #f1c40f; font-size: 1.4rem; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
 
-    /* Form Styling */
     .form-group { margin-bottom: 15px; text-align: left; background: rgba(255,255,255,0.05); padding: 12px; border-radius: 15px; transition: opacity 0.3s; }
     .form-group.disabled-section { opacity: 0.3; pointer-events: none; filter: grayscale(100%); }
     label { display: block; font-weight: bold; margin-bottom: 8px; color: #bdc3c7; font-size: 0.85rem; }
@@ -54,7 +53,6 @@
     button.btn-main { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 15px; font-size: 1.2rem; cursor: pointer; font-weight: bold; margin-top: 10px; box-shadow: 0 4px 0 #a02040; transition: 0.1s; }
     button.btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #a02040; }
 
-    /* Game UI */
     .header-game { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     #label-soal { font-weight: bold; color: #bdc3c7; }
     
@@ -66,16 +64,13 @@
     
     #jawaban-display { font-size: 2.5rem; background: #000; border: 3px solid var(--primary); border-radius: 15px; padding: 10px; margin-bottom: 15px; min-height: 70px; color: #fff; display: flex; align-items: center; justify-content: center; letter-spacing: 2px; }
 
-    /* Virtual Numpad */
     .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
     .num-btn { background: #34495e; color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.5rem; font-weight: bold; cursor: pointer; transition: 0.1s; }
     .num-btn:active { background: var(--primary); transform: scale(0.95); }
     .num-btn.action { background: #576574; }
 
-    /* Pause Overlay */
     #pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 12, 41, 0.95); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
 
-    /* Recap Table */
     .scroll-table { overflow-y: auto; max-height: 250px; margin-top: 15px; border-radius: 10px; }
     table { width: 100%; border-collapse: collapse; background: #222; }
     th, td { padding: 10px; border-bottom: 1px solid #333; text-align: center; font-size: 0.8rem; }
@@ -90,23 +85,23 @@
     <h2>🚀 Hitung Cepat Arka</h2>
     
     <div class="form-group" style="background: rgba(52, 152, 219, 0.15);">
-      <label>Kurikulum Pembelajaran</label>
+      <label>Buku Sempoa Tingkat 1</label>
       <select id="set-mode" onchange="toggleCustomOptions()">
         <option value="custom">Kustom Bebas (Atur Sendiri)</option>
-        <option value="tk1">Sempoa Tingkat 1 (Teman Kecil 1 Digit)</option>
-        <option value="tk2">Sempoa Tingkat 2 (Teman Besar 2 Digit)</option>
-        <option value="tk3">Sempoa Tingkat 3 (Mix & Kali/Bagi Dasar)</option>
-        <option value="tk4">Sempoa Tingkat 4 (Mahir / Ribuan)</option>
+        <option value="bab1">Bab 1: Rumus Sederhana (1 Digit)</option>
+        <option value="bab2">Bab 2: Teman Kecil (1 Digit)</option>
+        <option value="bab3">Bab 3: Teman Besar (1 Digit)</option>
+        <option value="bab4">Bab 4: Teman Gabungan (1 Digit)</option>
+        <option value="bab5">Bab 5: Full 2 Digit (Puluhan)</option>
       </select>
     </div>
 
-    <!-- Dropdown Level Kesulitan Baru -->
     <div id="difficulty-group" class="form-group disabled-section" style="background: rgba(46, 204, 113, 0.15);">
-      <label>Level Kesulitan (Khusus Mode Sempoa)</label>
+      <label>Tingkat Kesulitan (Pengaruh ke Panjang Baris Soal)</label>
       <select id="set-difficulty">
-        <option value="easy">🟢 Easy (Mudah)</option>
+        <option value="easy">🟢 Easy (Pendek)</option>
         <option value="medium" selected>🟡 Medium (Sedang)</option>
-        <option value="hard">🔴 Hard (Sulit)</option>
+        <option value="hard">🔴 Hard (Panjang & Cepat)</option>
       </select>
     </div>
 
@@ -127,19 +122,19 @@
     <div class="form-group">
       <label>Pengaturan Game</label>
       <div class="grid-options">
-        <div><label>Musik Latar</label>
+        <div><label>Musik</label>
           <select id="set-music" style="padding: 8px; font-size: 0.9rem;">
-            <option value="none">Tanpa Musik</option>
+            <option value="none">Diam</option>
             <option value="upbeat" selected>Ceria</option>
             <option value="tense">Tegang</option>
           </select>
         </div>
-        <div><label>Baris (+/-)</label><input type="number" id="set-baris" value="3" min="2" style="padding: 8px;"></div>
-        <div><label>Soal</label><input type="number" id="set-jumlah" value="5" style="padding: 8px;"></div>
-        <div><label>Detik / Soal</label><input type="number" id="set-waktu" value="10" style="padding: 8px;"></div>
+        <div><label>Baris Dasar</label><input type="number" id="set-baris" value="3" min="2" style="padding: 8px;"></div>
+        <div><label>Total Soal</label><input type="number" id="set-jumlah" value="5" style="padding: 8px;"></div>
+        <div><label>Detik/Soal</label><input type="number" id="set-waktu" value="10" style="padding: 8px;"></div>
         
         <label class="check-item span-2" style="background: #a02040;"><input type="checkbox" id="anti-minus" checked> 🛡️ Cegah Hasil Minus</label>
-        <label class="check-item span-2" style="background: #27ae60;"><input type="checkbox" id="allow-pause" checked> ⏸️ Izinkan Jeda (Pause)</label>
+        <label class="check-item span-2" style="background: #27ae60;"><input type="checkbox" id="allow-pause" checked> ⏸️ Izinkan Jeda</label>
       </div>
     </div>
 
@@ -150,7 +145,7 @@
     <div id="pause-overlay" class="hidden">
       <h1 style="color: #f1c40f; font-size: 2.5rem; letter-spacing: 2px;">JEDA</h1>
       <p style="color: #bdc3c7; margin-bottom: 30px;">Waktu dan soal dibekukan sementara.</p>
-      <button class="btn-main" style="width: 80%; background: var(--success); box-shadow: 0 4px 0 #1e8449;" onclick="togglePause()">▶️ LANJUTKAN MAIN</button>
+      <button class="btn-main" style="width: 80%; background: var(--success);" onclick="togglePause()">▶️ LANJUTKAN MAIN</button>
     </div>
 
     <div class="header-game">
@@ -198,7 +193,6 @@
     let state = { current: 0, skor: 0, rekap: [], input: "", isPaused: false };
     let timerInterval;
 
-    // UI Toggle: Atur visibilitas dan ketersediaan opsi menu
     function toggleCustomOptions() {
       const mode = document.getElementById('set-mode').value;
       const groupCustom = document.getElementById('custom-ops-group');
@@ -346,147 +340,139 @@
     }
 
     function formatTampil(angka) { return angka < 0 ? `(${angka})` : angka; }
-
     function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
-    // --- ALGORITMA UTAMA PEMBUATAN SOAL (DENGAN LEVEL KESULITAN) ---
+    // Logika Spesifik: Pengecekan Ketersediaan Manik Sempoa (Rumus Sederhana)
+    function isSederhana(curr, num, isAdd) {
+      let ct = Math.floor(curr / 5), cb = curr % 5;
+      let nt = Math.floor(num / 5), nb = num % 5;
+      if (isAdd) return (ct + nt <= 1) && (cb + nb <= 4);
+      else return (ct - nt >= 0) && (cb - nb >= 0);
+    }
+
     function buatSoal() {
-      // MODE SEMPOA TINGKAT 1 (Hasil selalu 0-9)
-      if (config.mode === 'tk1') {
-        let maxAngka = config.diff === 'easy' ? 4 : (config.diff === 'medium' ? 6 : 9);
-        let runningTotal = getRandomInt(1, Math.min(9, maxAngka));
-        let displayHtml = formatTampil(runningTotal);
-        let detailSoal = formatTampil(runningTotal);
+      // Penyesuaian Panjang Baris berdasarkan Level Kesulitan (Sesuai Buku Latihan)
+      let barisTarget = config.baris;
+      if (config.mode !== 'custom') {
+          if (config.diff === 'easy') barisTarget = Math.max(3, config.baris);
+          if (config.diff === 'medium') barisTarget = config.baris + 2;
+          if (config.diff === 'hard') barisTarget = config.baris + 5; // Simulasikan kolom panjang di buku
+      }
+
+      // BAB 1: RUMUS SEDERHANA (Murni logika manik tanpa meminjam)
+      if (config.mode === 'bab1') {
+        let total = getRandomInt(1, 9);
+        let displayHtml = formatTampil(total);
+        let detailSoal = formatTampil(total);
         
-        for (let i = 1; i < config.baris; i++) {
+        for (let i = 1; i < barisTarget; i++) {
+          let op = Math.random() > 0.5 ? '+' : '-';
+          let validNums = [];
+          
+          for (let n = 1; n <= 9; n++) {
+            if (op === '+' && isSederhana(total, n, true) && total + n <= 9) validNums.push(n);
+            if (op === '-' && isSederhana(total, n, false) && total - n >= 0) validNums.push(n);
+          }
+          
+          if (validNums.length === 0) {
+            op = op === '+' ? '-' : '+';
+            for (let n = 1; n <= 9; n++) {
+              if (op === '+' && isSederhana(total, n, true) && total + n <= 9) validNums.push(n);
+              if (op === '-' && isSederhana(total, n, false) && total - n >= 0) validNums.push(n);
+            }
+          }
+          
+          let num = validNums.length > 0 ? validNums[getRandomInt(0, validNums.length - 1)] : 0;
+          if (num > 0) {
+            displayHtml += `<br>${op} ${formatTampil(num)}`;
+            detailSoal += ` ${op} ${formatTampil(num)}`;
+            total = op === '+' ? total + num : total - num;
+          }
+        }
+        return { html: displayHtml, total: total, detail: detailSoal };
+      }
+
+      // BAB 2: TEMAN KECIL (Hasil dijaga tetap 0-9, memicu pelengkap 5)
+      if (config.mode === 'bab2') {
+        let total = getRandomInt(1, 9);
+        let displayHtml = formatTampil(total);
+        let detailSoal = formatTampil(total);
+        
+        for (let i = 1; i < barisTarget; i++) {
           let op = Math.random() > 0.5 ? '+' : '-';
           let num = 0;
           
           if (op === '+') {
-            let maxBisaDitambah = Math.min(9 - runningTotal, maxAngka);
+            let maxBisaDitambah = 9 - total;
             if (maxBisaDitambah <= 0) { op = '-'; } 
             else { num = getRandomInt(1, maxBisaDitambah); }
           }
           if (op === '-') {
-            let maxBisaDikurang = Math.min(runningTotal, maxAngka);
-            if (maxBisaDikurang <= 0) { op = '+'; num = getRandomInt(1, Math.min(9 - runningTotal, maxAngka) || 1); } 
+            let maxBisaDikurang = total;
+            if (maxBisaDikurang <= 0) { op = '+'; num = getRandomInt(1, 9 - total || 1); } 
             else { num = getRandomInt(1, maxBisaDikurang); }
           }
           
-          displayHtml += `<br>${op} ${formatTampil(num)}`;
-          detailSoal += ` ${op} ${formatTampil(num)}`;
-          runningTotal = op === '+' ? runningTotal + num : runningTotal - num;
+          if (num > 0) {
+              displayHtml += `<br>${op} ${formatTampil(num)}`;
+              detailSoal += ` ${op} ${formatTampil(num)}`;
+              total = op === '+' ? total + num : total - num;
+          }
         }
-        return { html: displayHtml, total: runningTotal, detail: detailSoal };
+        return { html: displayHtml, total: total, detail: detailSoal };
       }
 
-      // MODE SEMPOA TINGKAT 2 (Teman Besar 2 Digit)
-      if (config.mode === 'tk2') {
-        let minVal = 10;
-        let maxVal = config.diff === 'easy' ? 30 : (config.diff === 'medium' ? 60 : 99);
+      // BAB 3 & 4: TEMAN BESAR & GABUNGAN (Logika 1 Digit Full Menerobos Puluhan)
+      if (config.mode === 'bab3' || config.mode === 'bab4') {
+        let total = getRandomInt(1, 9);
+        let displayHtml = formatTampil(total);
+        let detailSoal = formatTampil(total);
         
-        let runningTotal = getRandomInt(minVal, maxVal);
-        let displayHtml = formatTampil(runningTotal);
-        let detailSoal = formatTampil(runningTotal);
-        
-        for (let i = 1; i < config.baris; i++) {
+        for (let i = 1; i < barisTarget; i++) {
           let op = Math.random() > 0.5 ? '+' : '-';
-          let num = getRandomInt(minVal, maxVal);
+          let minVal = 1;
+          // Untuk mensimulasikan gabungan lebih sering di Bab 4 Hard, paksa angka besar
+          if (config.mode === 'bab4' && config.diff === 'hard' && op === '+') minVal = 6; 
           
-          if (op === '-' && num > runningTotal) {
-             num = getRandomInt(1, runningTotal); // Anti minus
-             if (num === 0) { op = '+'; num = getRandomInt(minVal, maxVal); }
+          let num = getRandomInt(minVal, 9);
+          if (op === '-' && num > total) {
+             num = getRandomInt(1, total); // Anti minus
+             if (num === 0) { op = '+'; num = getRandomInt(minVal, 9); }
           }
           
           displayHtml += `<br>${op} ${formatTampil(num)}`;
           detailSoal += ` ${op} ${formatTampil(num)}`;
-          runningTotal = op === '+' ? runningTotal + num : runningTotal - num;
+          total = op === '+' ? total + num : total - num;
         }
-        return { html: displayHtml, total: runningTotal, detail: detailSoal };
+        return { html: displayHtml, total: total, detail: detailSoal };
       }
 
-      // MODE SEMPOA TINGKAT 3 (Campuran & Kali/Bagi Dasar)
-      if (config.mode === 'tk3') {
-        let tipe = Math.random();
-        if (tipe < 0.5) { 
-          // Soal Penjumlahan Beruntun
-          let minVal = config.diff === 'easy' ? 10 : (config.diff === 'medium' ? 50 : 100);
-          let maxVal = config.diff === 'easy' ? 99 : (config.diff === 'medium' ? 300 : 999);
-
-          let runningTotal = getRandomInt(minVal, maxVal);
-          let displayHtml = formatTampil(runningTotal);
-          let detailSoal = formatTampil(runningTotal);
-          for (let i = 1; i < config.baris; i++) {
-            let op = Math.random() > 0.5 ? '+' : '-';
-            let num = getRandomInt(minVal, maxVal);
-            if (op === '-' && num > runningTotal) { num = getRandomInt(10, runningTotal); }
-            displayHtml += `<br>${op} ${formatTampil(num)}`;
-            detailSoal += ` ${op} ${formatTampil(num)}`;
-            runningTotal = op === '+' ? runningTotal + num : runningTotal - num;
+      // BAB 5: DUA DIGIT (Simulasi Halaman Terakhir Buku)
+      if (config.mode === 'bab5') {
+        let minV = 10;
+        let maxV = config.diff === 'easy' ? 30 : (config.diff === 'medium' ? 60 : 99);
+        
+        let total = getRandomInt(minV, maxV);
+        let displayHtml = formatTampil(total);
+        let detailSoal = formatTampil(total);
+        
+        for (let i = 1; i < barisTarget; i++) {
+          let op = Math.random() > 0.5 ? '+' : '-';
+          let num = getRandomInt(minV, maxV);
+          
+          if (op === '-' && num > total) {
+             num = getRandomInt(10, total > 10 ? total : 10);
+             if (num === 10 && total < 10) { op = '+'; num = getRandomInt(minV, maxV); }
           }
-          return { html: displayHtml, total: runningTotal, detail: detailSoal };
-        } else if (tipe < 0.75) {
-          // Soal Perkalian
-          let a, b;
-          if (config.diff === 'easy') { a = getRandomInt(10, 50); b = getRandomInt(2, 5); }
-          else if (config.diff === 'medium') { a = getRandomInt(50, 200); b = getRandomInt(4, 9); }
-          else { a = getRandomInt(200, 999); b = getRandomInt(6, 9); }
-          return { html: `${formatTampil(a)}<br>x ${formatTampil(b)}`, total: a * b, detail: `${a} x ${b}` };
-        } else {
-          // Soal Pembagian
-          let ans, b;
-          if (config.diff === 'easy') { ans = getRandomInt(10, 30); b = getRandomInt(2, 5); }
-          else if (config.diff === 'medium') { ans = getRandomInt(20, 70); b = getRandomInt(3, 9); }
-          else { ans = getRandomInt(50, 150); b = getRandomInt(6, 9); }
-          let a = b * ans;
-          return { html: `${formatTampil(a)}<br>: ${formatTampil(b)}`, total: ans, detail: `${a} : ${b}` };
+          
+          displayHtml += `<br>${op} ${formatTampil(num)}`;
+          detailSoal += ` ${op} ${formatTampil(num)}`;
+          total = op === '+' ? total + num : total - num;
         }
+        return { html: displayHtml, total: total, detail: detailSoal };
       }
 
-      // MODE SEMPOA TINGKAT 4 (Mahir / Ribuan)
-      if (config.mode === 'tk4') {
-        let tipe = Math.random();
-        if (tipe < 0.4) {
-          // Penjumlahan Panjang
-          let minVal = config.diff === 'easy' ? 1000 : (config.diff === 'medium' ? 3000 : 5000);
-          let maxVal = config.diff === 'easy' ? 3000 : (config.diff === 'medium' ? 7000 : 9999);
-
-          let runningTotal = getRandomInt(minVal, maxVal);
-          let displayHtml = formatTampil(runningTotal);
-          let detailSoal = formatTampil(runningTotal);
-          for (let i = 1; i < config.baris; i++) {
-            let op = Math.random() > 0.5 ? '+' : '-';
-            let num = getRandomInt(minVal, maxVal);
-            if (op === '-' && num > runningTotal) { num = getRandomInt(100, runningTotal); }
-            displayHtml += `<br>${op} ${formatTampil(num)}`;
-            detailSoal += ` ${op} ${formatTampil(num)}`;
-            runningTotal = op === '+' ? runningTotal + num : runningTotal - num;
-          }
-          return { html: displayHtml, total: runningTotal, detail: detailSoal };
-        } else if (tipe < 0.7) {
-          // Perkalian Kompleks
-          let a, b;
-          let r = Math.random();
-          if (config.diff === 'easy') { 
-            if(r > 0.5) { a = getRandomInt(1000, 3000); b = getRandomInt(2, 5); } else { a = getRandomInt(11, 20); b = getRandomInt(11, 20); }
-          } else if (config.diff === 'medium') { 
-            if(r > 0.5) { a = getRandomInt(3000, 7000); b = getRandomInt(4, 9); } else { a = getRandomInt(21, 50); b = getRandomInt(21, 50); }
-          } else {
-            if(r > 0.5) { a = getRandomInt(5000, 9999); b = getRandomInt(6, 9); } else { a = getRandomInt(51, 99); b = getRandomInt(51, 99); }
-          }
-          return { html: `${formatTampil(a)}<br>x ${formatTampil(b)}`, total: a * b, detail: `${a} x ${b}` };
-        } else {
-          // Pembagian Kompleks
-          let ans, b;
-          if (config.diff === 'easy') { ans = getRandomInt(100, 400); b = getRandomInt(6, 9); }
-          else if (config.diff === 'medium') { ans = getRandomInt(200, 700); b = getRandomInt(11, 20); }
-          else { ans = getRandomInt(500, 999); b = getRandomInt(21, 50); }
-          let a = b * ans;
-          return { html: `${formatTampil(a)}<br>: ${formatTampil(b)}`, total: ans, detail: `${a} : ${b}` };
-        }
-      }
-
-      // MODE CUSTOM BEBAS
+      // MODE CUSTOM BEBAS (Sesuai Opsi Centang)
       function generateNumberCustom() {
         const type = config.val[Math.floor(Math.random() * config.val.length)];
         if (type === 'satuan') return Math.floor(Math.random() * 9) + 1;
@@ -619,7 +605,6 @@
       toggleCustomOptions(); 
     }
     
-    // Jalankan satu kali saat awal dibuka agar tampilan sesuai default select
     toggleCustomOptions();
   </script>
 </body>
