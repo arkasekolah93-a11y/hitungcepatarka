@@ -351,15 +351,15 @@
     }
 
     function buatSoal() {
-      // Penyesuaian Panjang Baris berdasarkan Level Kesulitan (Sesuai Buku Latihan)
+      // Penyesuaian Panjang Baris
       let barisTarget = config.baris;
       if (config.mode !== 'custom') {
           if (config.diff === 'easy') barisTarget = Math.max(3, config.baris);
           if (config.diff === 'medium') barisTarget = config.baris + 2;
-          if (config.diff === 'hard') barisTarget = config.baris + 5; // Simulasikan kolom panjang di buku
+          if (config.diff === 'hard') barisTarget = config.baris + 5;
       }
 
-      // BAB 1: RUMUS SEDERHANA (Murni logika manik tanpa meminjam)
+      // BAB 1: RUMUS SEDERHANA
       if (config.mode === 'bab1') {
         let total = getRandomInt(1, 9);
         let displayHtml = formatTampil(total);
@@ -392,7 +392,7 @@
         return { html: displayHtml, total: total, detail: detailSoal };
       }
 
-      // BAB 2: TEMAN KECIL (Hasil dijaga tetap 0-9, memicu pelengkap 5)
+      // BAB 2: TEMAN KECIL
       if (config.mode === 'bab2') {
         let total = getRandomInt(1, 9);
         let displayHtml = formatTampil(total);
@@ -402,15 +402,21 @@
           let op = Math.random() > 0.5 ? '+' : '-';
           let num = 0;
           
-          if (op === '+') {
-            let maxBisaDitambah = 9 - total;
-            if (maxBisaDitambah <= 0) { op = '-'; } 
-            else { num = getRandomInt(1, maxBisaDitambah); }
-          }
+          // ANTI MINUS KETAT BAB 2
           if (op === '-') {
-            let maxBisaDikurang = total;
-            if (maxBisaDikurang <= 0) { op = '+'; num = getRandomInt(1, 9 - total || 1); } 
-            else { num = getRandomInt(1, maxBisaDikurang); }
+            if (total <= 0) {
+              op = '+';
+              num = getRandomInt(1, 9);
+            } else {
+              num = getRandomInt(1, total);
+            }
+          } else {
+            let maxBisaDitambah = 9 - total;
+            if (maxBisaDitambah <= 0) { 
+              op = '-'; 
+              num = getRandomInt(1, total); 
+            } 
+            else { num = getRandomInt(1, maxBisaDitambah); }
           }
           
           if (num > 0) {
@@ -422,7 +428,7 @@
         return { html: displayHtml, total: total, detail: detailSoal };
       }
 
-      // BAB 3 & 4: TEMAN BESAR & GABUNGAN (Logika 1 Digit Full Menerobos Puluhan)
+      // BAB 3 & 4: TEMAN BESAR & GABUNGAN
       if (config.mode === 'bab3' || config.mode === 'bab4') {
         let total = getRandomInt(1, 9);
         let displayHtml = formatTampil(total);
@@ -431,13 +437,18 @@
         for (let i = 1; i < barisTarget; i++) {
           let op = Math.random() > 0.5 ? '+' : '-';
           let minVal = 1;
-          // Untuk mensimulasikan gabungan lebih sering di Bab 4 Hard, paksa angka besar
           if (config.mode === 'bab4' && config.diff === 'hard' && op === '+') minVal = 6; 
           
           let num = getRandomInt(minVal, 9);
-          if (op === '-' && num > total) {
-             num = getRandomInt(1, total); // Anti minus
-             if (num === 0) { op = '+'; num = getRandomInt(minVal, 9); }
+          
+          // ANTI MINUS KETAT BAB 3 & 4
+          if (op === '-') {
+            if (total <= 0) {
+               op = '+';
+               num = getRandomInt(minVal, 9);
+            } else if (num > total) {
+               num = getRandomInt(1, total);
+            }
           }
           
           displayHtml += `<br>${op} ${formatTampil(num)}`;
@@ -447,7 +458,7 @@
         return { html: displayHtml, total: total, detail: detailSoal };
       }
 
-      // BAB 5: DUA DIGIT (Simulasi Halaman Terakhir Buku)
+      // BAB 5: DUA DIGIT (Puluhan)
       if (config.mode === 'bab5') {
         let minV = 10;
         let maxV = config.diff === 'easy' ? 30 : (config.diff === 'medium' ? 60 : 99);
@@ -460,9 +471,14 @@
           let op = Math.random() > 0.5 ? '+' : '-';
           let num = getRandomInt(minV, maxV);
           
-          if (op === '-' && num > total) {
-             num = getRandomInt(10, total > 10 ? total : 10);
-             if (num === 10 && total < 10) { op = '+'; num = getRandomInt(minV, maxV); }
+          // ANTI MINUS KETAT BAB 5
+          if (op === '-') {
+            if (total < minV) {
+               op = '+';
+               num = getRandomInt(minV, maxV);
+            } else if (num > total) {
+               num = getRandomInt(minV, total);
+            }
           }
           
           displayHtml += `<br>${op} ${formatTampil(num)}`;
@@ -472,7 +488,7 @@
         return { html: displayHtml, total: total, detail: detailSoal };
       }
 
-      // MODE CUSTOM BEBAS (Sesuai Opsi Centang)
+      // MODE CUSTOM BEBAS
       function generateNumberCustom() {
         const type = config.val[Math.floor(Math.random() * config.val.length)];
         if (type === 'satuan') return Math.floor(Math.random() * 9) + 1;
@@ -498,13 +514,16 @@
           detailSoal += ` x ${formatTampil(num)}`;
           runningTotal *= num;
         } else if (op === '-') {
-          if (config.antiMinus && num > runningTotal) {
+          // ANTI MINUS CUSTOM
+          if (config.antiMinus) {
             if (runningTotal <= 0) {
               displayHtml += `<br>+ ${formatTampil(num)}`;
               detailSoal += ` + ${formatTampil(num)}`;
               runningTotal += num;
               continue;
-            } else { num = Math.floor(Math.random() * runningTotal) + 1; }
+            } else if (num > runningTotal) { 
+              num = Math.floor(Math.random() * runningTotal) + 1; 
+            }
           }
           displayHtml += `<br>- ${formatTampil(num)}`;
           detailSoal += ` - ${formatTampil(num)}`;
