@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Game Hitung Cepat Buat Arka</title>
+  <title>Game Hitung Cepat Sempoa Kreatif - Arka</title>
   <style>
     :root { --bg: #0f0c29; --card: #1b1b2f; --primary: #e94560; --text: #e9e9e9; --success: #00d2ad; --danger: #ff4d4d; --accent: #3498db;}
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -53,13 +53,12 @@
     button.btn-main { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 15px; font-size: 1.2rem; cursor: pointer; font-weight: bold; margin-top: 10px; box-shadow: 0 4px 0 #a02040; transition: 0.1s; }
     button.btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #a02040; }
 
-    /* PENGATURAN UI GAME AGAR TIDAK SCROLL */
     #screen-game {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      max-height: 95dvh; /* Kunci ukuran tidak melebihi tinggi layar HP */
-      padding: 15px 20px; /* Sedikit pangkas padding agar lega */
+      max-height: 95dvh;
+      padding: 15px 20px;
       margin: 10px;
     }
 
@@ -70,7 +69,6 @@
     #btn-pause { background: rgba(255,255,255,0.1); border: none; border-radius: 8px; color: white; font-size: 1.2rem; padding: 8px 12px; cursor: pointer; }
     #timer { font-size: 3rem; font-weight: 900; color: #f1c40f; text-shadow: 0 0 15px rgba(241, 196, 15, 0.4); transition: color 0.3s;}
     
-    /* Wadah khusus soal agar dinamis mengambil sisa ruang kosong */
     .soal-wrapper {
       flex-grow: 1; 
       display: flex;
@@ -86,7 +84,7 @@
       color: #fff; 
       margin: 0;
       text-align: center;
-      transition: font-size 0.2s ease-in-out; /* Efek transisi ukuran angka halus */
+      transition: font-size 0.2s ease-in-out;
     }
     
     #jawaban-display { font-size: 2.2rem; background: #000; border: 3px solid var(--primary); border-radius: 12px; padding: 5px; margin-bottom: 5px; min-height: 60px; color: #fff; display: flex; align-items: center; justify-content: center; letter-spacing: 2px; flex-shrink: 0; }
@@ -109,26 +107,28 @@
 <body>
 
   <div id="screen-menu" class="container">
-    <h2>🚀 Hitung Cepat Arka</h2>
+    <h2>🚀 Sempoa Kreatif Kurikulum</h2>
     
     <div class="form-group" style="background: rgba(52, 152, 219, 0.15);">
-      <label>Buku Sempoa Tingkat 1</label>
+      <label>Pilih Kurikulum (Tingkat 1)</label>
       <select id="set-mode" onchange="toggleCustomOptions()">
         <option value="custom">Kustom Bebas (Atur Sendiri)</option>
-        <option value="bab1">Bab 1: Rumus Sederhana (1 Digit)</option>
-        <option value="bab2">Bab 2: Teman Kecil (1 Digit)</option>
-        <option value="bab3">Bab 3: Teman Besar (1 Digit)</option>
-        <option value="bab4">Bab 4: Teman Gabungan (1 Digit)</option>
-        <option value="bab5">Bab 5: Full 2 Digit (Puluhan)</option>
+        <option value="modul1">Modul 1: Manik Langsung (1 Digit)</option>
+        <option value="modul2">Modul 2: Teman Kecil (+) (1 Digit)</option>
+        <option value="modul3">Modul 3: Teman Kecil (-) (1 Digit)</option>
+        <option value="modul4">Modul 4: Teman Besar (+) (1 Digit)</option>
+        <option value="modul5">Modul 5: Teman Besar (-) (1 Digit)</option>
+        <option value="modul6">Modul 6: Teman Gabungan (1 Digit)</option>
+        <option value="modul7">Modul 7: Evaluasi & Puluhan (2 Digit)</option>
       </select>
     </div>
 
     <div id="difficulty-group" class="form-group disabled-section" style="background: rgba(46, 204, 113, 0.15);">
-      <label>Tingkat Kesulitan (Pengaruh ke Panjang Baris Soal)</label>
+      <label>Tingkat Kesulitan</label>
       <select id="set-difficulty">
-        <option value="easy">🟢 Easy (Pendek)</option>
+        <option value="easy">🟢 Easy (Manik Sedikit)</option>
         <option value="medium" selected>🟡 Medium (Sedang)</option>
-        <option value="hard">🔴 Hard (Panjang & Cepat)</option>
+        <option value="hard">🔴 Hard (Cepat & Panjang)</option>
       </select>
     </div>
 
@@ -147,7 +147,7 @@
     </div>
 
     <div class="form-group">
-      <label>Pengaturan Game</label>
+      <label>Pengaturan Permainan</label>
       <div class="grid-options">
         <div><label>Musik</label>
           <select id="set-music" style="padding: 8px; font-size: 0.9rem;">
@@ -160,8 +160,8 @@
         <div><label>Total Soal</label><input type="number" id="set-jumlah" value="5" style="padding: 8px;"></div>
         <div><label>Detik/Soal</label><input type="number" id="set-waktu" value="10" style="padding: 8px;"></div>
         
-        <label class="check-item span-2" style="background: #a02040;"><input type="checkbox" id="anti-minus" checked> 🛡️ Cegah Hasil Minus</label>
-        <label class="check-item span-2" style="background: #27ae60;"><input type="checkbox" id="allow-pause" checked> ⏸️ Izinkan Jeda</label>
+        <label class="check-item span-2" style="background: #a02040;"><input type="checkbox" id="anti-minus" checked> 🛡️ Hasil Tidak Boleh Minus</label>
+        <label class="check-item span-2" style="background: #27ae60;"><input type="checkbox" id="allow-pause" checked> ⏸️ Tombol Jeda Nyala</label>
       </div>
     </div>
 
@@ -171,8 +171,7 @@
   <div id="screen-game" class="container hidden">
     <div id="pause-overlay" class="hidden">
       <h1 style="color: #f1c40f; font-size: 2.5rem; letter-spacing: 2px;">JEDA</h1>
-      <p style="color: #bdc3c7; margin-bottom: 30px;">Waktu dan soal dibekukan sementara.</p>
-      <button class="btn-main" style="width: 80%; background: var(--success);" onclick="togglePause()">▶️ LANJUTKAN MAIN</button>
+      <button class="btn-main" style="width: 80%; background: var(--success);" onclick="togglePause()">▶️ LANJUTKAN</button>
     </div>
 
     <div class="header-game">
@@ -207,7 +206,7 @@
   </div>
 
   <div id="screen-recap" class="container hidden">
-    <h2>🏆 Hasil Arka</h2>
+    <h2>🏆 Hasil Latihan Arka</h2>
     <h1 id="final-score" style="margin:0; font-size: 3.5rem;">0</h1>
     <div class="scroll-table">
       <table>
@@ -215,7 +214,7 @@
         <tbody id="recap-body"></tbody>
       </table>
     </div>
-    <button class="btn-main" onclick="mainLagi()">MAIN LAGI</button>
+    <button class="btn-main" onclick="mainLagi()">LATIH LAGI</button>
   </div>
 
   <script>
@@ -240,7 +239,6 @@
     function enterFullScreen() {
       let doc = document.documentElement;
       if (doc.requestFullscreen) doc.requestFullscreen().catch(()=>{});
-      else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen().catch(()=>{});
     }
 
     function exitFullScreen() {
@@ -305,7 +303,6 @@
     function stopBGM() {
       if (bgmIntervalId) clearInterval(bgmIntervalId);
     }
-    // --- END AUDIO ---
 
     function togglePause() {
       if (!config.allowPause) return;
@@ -334,6 +331,126 @@
       return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
     }
 
+    // --- LOGIKA SEMPOA UNTUK MODUL ---
+    function isDirect(curr, num, op) {
+      const ct = Math.floor(curr / 5), cb = curr % 5;
+      const nt = Math.floor(num / 5), nb = num % 5;
+      if (op === '+') return (ct + nt <= 1) && (cb + nb <= 4);
+      return (ct - nt >= 0) && (cb - nb >= 0);
+    }
+
+    function isSmallFriendPlus(curr, num) {
+      const cb = curr % 5;
+      return (cb + num >= 5) && (curr + num < 10) && (curr < 5);
+    }
+
+    function isSmallFriendMinus(curr, num) {
+      const cb = curr % 5;
+      return (cb < num) && (curr >= 5) && (num < 5);
+    }
+
+    function isBigFriendPlus(curr, num) {
+      return (curr + num >= 10);
+    }
+
+    function isBigFriendMinus(curr, num) {
+      return (curr < num) && (curr >= 0); // Biasanya melibatkan pinjam dari puluhan
+    }
+
+    function buatSoal() {
+      let b = parseInt(config.baris);
+      if (config.mode !== 'custom') {
+        if (config.diff === 'medium') b += 2;
+        if (config.diff === 'hard') b += 5;
+      }
+
+      let total = 0;
+      let steps = [];
+      
+      // Initial value
+      total = Math.floor(Math.random() * 9) + 1;
+      steps.push(total);
+
+      for (let i = 1; i < b; i++) {
+        let op = Math.random() > 0.4 ? '+' : '-';
+        let possible = [];
+
+        for (let n = 1; n <= 9; n++) {
+          let isValid = false;
+          let tempTotal = op === '+' ? total + n : total - n;
+          
+          if (tempTotal < 0 || tempTotal > 99) continue;
+
+          switch(config.mode) {
+            case 'modul1': // Sederhana / Langsung
+              if (isDirect(total, n, op) && (op==='+' ? total+n<10 : total-n>=0)) isValid = true;
+              break;
+            case 'modul2': // TK Tambah
+              if (op === '+' && isSmallFriendPlus(total, n)) isValid = true;
+              else if (op === '-' && isDirect(total, n, op)) isValid = true; // Campur langsung agar soal variatif
+              break;
+            case 'modul3': // TK Kurang
+              if (op === '-' && isSmallFriendMinus(total, n)) isValid = true;
+              else if (op === '+' && isDirect(total, n, op)) isValid = true;
+              break;
+            case 'modul4': // TB Tambah
+              if (op === '+' && isBigFriendPlus(total, n) && total+n < 20) isValid = true;
+              else if (isDirect(total, n, op)) isValid = true;
+              break;
+            case 'modul5': // TB Kurang
+              if (op === '-' && isBigFriendMinus(total, n) && total >= 10) isValid = true;
+              else if (isDirect(total, n, op)) isValid = true;
+              break;
+            case 'modul6': // Gabungan
+              if (op === '+' && n >= 6 && isBigFriendPlus(total, n) && !isDirect(total, n, op)) isValid = true;
+              else if (isDirect(total, n, op)) isValid = true;
+              break;
+            case 'modul7': // 2 Digit Evaluasi
+              isValid = true;
+              break;
+            case 'custom':
+              isValid = true;
+              break;
+          }
+          if (isValid) possible.push(n);
+        }
+
+        if (possible.length > 0) {
+          let picked = possible[Math.floor(Math.random() * possible.length)];
+          if (op === '+') total += picked; else total -= picked;
+          steps.push(op + picked);
+        } else {
+          // Fallback if stuck
+          let fallback = Math.floor(Math.random() * 3) + 1;
+          if (total - fallback >= 0) { total -= fallback; steps.push("-" + fallback); }
+          else { total += fallback; steps.push("+" + fallback); }
+        }
+      }
+
+      // Khusus Modul 7 override ke 2 digit
+      if (config.mode === 'modul7') {
+        total = Math.floor(Math.random() * 80) + 10;
+        steps = [total];
+        for(let i=1; i<b; i++) {
+          let op = Math.random() > 0.5 ? '+' : '-';
+          let num = Math.floor(Math.random() * 20) + 1;
+          if (op === '-' && total - num < 0) op = '+';
+          if (op === '+') total += num; else total -= num;
+          steps.push(op + num);
+        }
+      }
+
+      // Final rendering
+      let displayHtml = steps.map((s, idx) => {
+        let text = s.toString();
+        if (idx === 0) return text;
+        return (text.startsWith('+') ? "+ " : "- ") + text.substring(1);
+      }).join("<br>");
+
+      return { html: displayHtml, total: total, detail: steps.join(" "), barisAkhir: b };
+    }
+
+    // --- GAME ENGINE ---
     function mulaiGame() {
       enterFullScreen(); 
       initAudio(); 
@@ -351,11 +468,6 @@
         music: document.getElementById('set-music').value
       };
 
-      if (config.mode === 'custom' && (config.ops.length === 0 || config.val.length === 0)) {
-        alert("Pilih minimal satu Operasi dan satu Nilai Tempat untuk mode Custom!");
-        return;
-      }
-
       state = { current: 0, skor: 0, rekap: [], input: "", isPaused: false };
       
       const btnPause = document.getElementById('btn-pause');
@@ -369,174 +481,7 @@
       lanjutSoal();
     }
 
-    function formatTampil(angka) { return angka < 0 ? `(${angka})` : angka; }
-    function getRandomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-
-    function isSederhana(curr, num, isAdd) {
-      let ct = Math.floor(curr / 5), cb = curr % 5;
-      let nt = Math.floor(num / 5), nb = num % 5;
-      if (isAdd) return (ct + nt <= 1) && (cb + nb <= 4);
-      else return (ct - nt >= 0) && (cb - nb >= 0);
-    }
-
-    function buatSoal() {
-      let barisTarget = config.baris;
-      if (config.mode !== 'custom') {
-          if (config.diff === 'easy') barisTarget = Math.max(3, config.baris);
-          if (config.diff === 'medium') barisTarget = config.baris + 2;
-          if (config.diff === 'hard') barisTarget = config.baris + 5;
-      }
-
-      // BAB 1: RUMUS SEDERHANA
-      if (config.mode === 'bab1') {
-        let total = getRandomInt(1, 9);
-        let displayHtml = formatTampil(total);
-        let detailSoal = formatTampil(total);
-        
-        for (let i = 1; i < barisTarget; i++) {
-          let op = Math.random() > 0.5 ? '+' : '-';
-          let validNums = [];
-          for (let n = 1; n <= 9; n++) {
-            if (op === '+' && isSederhana(total, n, true) && total + n <= 9) validNums.push(n);
-            if (op === '-' && isSederhana(total, n, false) && total - n >= 0) validNums.push(n);
-          }
-          if (validNums.length === 0) {
-            op = op === '+' ? '-' : '+';
-            for (let n = 1; n <= 9; n++) {
-              if (op === '+' && isSederhana(total, n, true) && total + n <= 9) validNums.push(n);
-              if (op === '-' && isSederhana(total, n, false) && total - n >= 0) validNums.push(n);
-            }
-          }
-          let num = validNums.length > 0 ? validNums[getRandomInt(0, validNums.length - 1)] : 0;
-          if (num > 0) {
-            displayHtml += `<br>${op} ${formatTampil(num)}`;
-            detailSoal += ` ${op} ${formatTampil(num)}`;
-            total = op === '+' ? total + num : total - num;
-          }
-        }
-        return { html: displayHtml, total: total, detail: detailSoal, barisAkhir: barisTarget };
-      }
-
-      // BAB 2: TEMAN KECIL
-      if (config.mode === 'bab2') {
-        let total = getRandomInt(1, 9);
-        let displayHtml = formatTampil(total);
-        let detailSoal = formatTampil(total);
-        
-        for (let i = 1; i < barisTarget; i++) {
-          let op = Math.random() > 0.5 ? '+' : '-';
-          let num = 0;
-          if (op === '-') {
-            if (total <= 0) { op = '+'; num = getRandomInt(1, 9); } 
-            else { num = getRandomInt(1, total); }
-          } else {
-            let maxBisaDitambah = 9 - total;
-            if (maxBisaDitambah <= 0) { op = '-'; num = getRandomInt(1, total); } 
-            else { num = getRandomInt(1, maxBisaDitambah); }
-          }
-          if (num > 0) {
-              displayHtml += `<br>${op} ${formatTampil(num)}`;
-              detailSoal += ` ${op} ${formatTampil(num)}`;
-              total = op === '+' ? total + num : total - num;
-          }
-        }
-        return { html: displayHtml, total: total, detail: detailSoal, barisAkhir: barisTarget };
-      }
-
-      // BAB 3 & 4: TEMAN BESAR & GABUNGAN
-      if (config.mode === 'bab3' || config.mode === 'bab4') {
-        let total = getRandomInt(1, 9);
-        let displayHtml = formatTampil(total);
-        let detailSoal = formatTampil(total);
-        
-        for (let i = 1; i < barisTarget; i++) {
-          let op = Math.random() > 0.5 ? '+' : '-';
-          let minVal = 1;
-          if (config.mode === 'bab4' && config.diff === 'hard' && op === '+') minVal = 6; 
-          let num = getRandomInt(minVal, 9);
-          if (op === '-') {
-            if (total <= 0) { op = '+'; num = getRandomInt(minVal, 9); } 
-            else if (num > total) { num = getRandomInt(1, total); }
-          }
-          displayHtml += `<br>${op} ${formatTampil(num)}`;
-          detailSoal += ` ${op} ${formatTampil(num)}`;
-          total = op === '+' ? total + num : total - num;
-        }
-        return { html: displayHtml, total: total, detail: detailSoal, barisAkhir: barisTarget };
-      }
-
-      // BAB 5: DUA DIGIT (Puluhan)
-      if (config.mode === 'bab5') {
-        let minV = 10;
-        let maxV = config.diff === 'easy' ? 30 : (config.diff === 'medium' ? 60 : 99);
-        let total = getRandomInt(minV, maxV);
-        let displayHtml = formatTampil(total);
-        let detailSoal = formatTampil(total);
-        
-        for (let i = 1; i < barisTarget; i++) {
-          let op = Math.random() > 0.5 ? '+' : '-';
-          let num = getRandomInt(minV, maxV);
-          if (op === '-') {
-            if (total < minV) { op = '+'; num = getRandomInt(minV, maxV); } 
-            else if (num > total) { num = getRandomInt(minV, total); }
-          }
-          displayHtml += `<br>${op} ${formatTampil(num)}`;
-          detailSoal += ` ${op} ${formatTampil(num)}`;
-          total = op === '+' ? total + num : total - num;
-        }
-        return { html: displayHtml, total: total, detail: detailSoal, barisAkhir: barisTarget };
-      }
-
-      // MODE CUSTOM BEBAS
-      function generateNumberCustom() {
-        const type = config.val[Math.floor(Math.random() * config.val.length)];
-        if (type === 'satuan') return Math.floor(Math.random() * 9) + 1;
-        if (type === 'puluhan') return Math.floor(Math.random() * 90) + 10;
-        if (type === 'ratusan') return Math.floor(Math.random() * 900) + 100;
-      }
-      
-      let runningTotal = generateNumberCustom();
-      let displayHtml = `${formatTampil(runningTotal)}`;
-      let detailSoal = `${formatTampil(runningTotal)}`;
-
-      for (let i = 1; i < config.baris; i++) {
-        const op = config.ops[Math.floor(Math.random() * config.ops.length)];
-        let num = generateNumberCustom();
-        
-        if (op === ':') {
-          runningTotal = runningTotal * num;
-          displayHtml = `${formatTampil(runningTotal)}<br>: ${formatTampil(num)}`;
-          detailSoal = `${formatTampil(runningTotal)} : ${formatTampil(num)}`;
-          runningTotal = runningTotal / num;
-        } else if (op === 'x') {
-          displayHtml += `<br>x ${formatTampil(num)}`;
-          detailSoal += ` x ${formatTampil(num)}`;
-          runningTotal *= num;
-        } else if (op === '-') {
-          if (config.antiMinus) {
-            if (runningTotal <= 0) {
-              displayHtml += `<br>+ ${formatTampil(num)}`;
-              detailSoal += ` + ${formatTampil(num)}`;
-              runningTotal += num;
-              continue;
-            } else if (num > runningTotal) { 
-              num = Math.floor(Math.random() * runningTotal) + 1; 
-            }
-          }
-          displayHtml += `<br>- ${formatTampil(num)}`;
-          detailSoal += ` - ${formatTampil(num)}`;
-          runningTotal -= num;
-        } else {
-          displayHtml += `<br>+ ${formatTampil(num)}`;
-          detailSoal += ` + ${formatTampil(num)}`;
-          runningTotal += num;
-        }
-      }
-      return { html: displayHtml, total: runningTotal, detail: detailSoal, barisAkhir: config.baris };
-    }
-
     let soalAktif;
-
     function lanjutSoal() {
       state.current++;
       if (state.current > config.jumlah) { tampilkanRekap(); return; }
@@ -549,14 +494,11 @@
       
       soalAktif = buatSoal();
       
-      // AUTO RESIZE FONT BERDASARKAN JUMLAH BARIS
       let b = soalAktif.barisAkhir;
       let fSize = "3.2rem";
       if (b >= 9) fSize = "1.5rem";
       else if (b >= 7) fSize = "1.8rem";
-      else if (b >= 6) fSize = "2.1rem";
       else if (b >= 5) fSize = "2.4rem";
-      else if (b >= 4) fSize = "2.8rem";
       
       const displayEl = document.getElementById('display-soal');
       displayEl.style.fontSize = fSize;
@@ -575,16 +517,8 @@
         if (state.isPaused) return; 
         sisa--;
         timerEl.innerText = sisa;
-        
-        if (sisa <= 5 && sisa > 0) {
-          timerEl.style.color = "var(--danger)";
-          playTick(false);
-        }
-        if (sisa <= 0) {
-          clearInterval(timerInterval);
-          playTick(true); 
-          cekJawaban(true);
-        }
+        if (sisa <= 3 && sisa > 0) { timerEl.style.color = "var(--danger)"; playTick(false); }
+        if (sisa <= 0) { clearInterval(timerInterval); playTick(true); cekJawaban(true); }
       }, 1000);
     }
 
@@ -599,17 +533,17 @@
       state.rekap.push({
         detail: soalAktif.detail,
         kunci: soalAktif.total,
-        user: timeout ? "Habis" : (userJawab === null ? "?" : userJawab),
+        user: timeout ? "Waktu Habis" : (userJawab === null ? "?" : userJawab),
         status: benar ? "Benar" : "Salah"
       });
 
-      document.getElementById('jawaban-display').innerText = benar ? "✔ BENAR" : "❌ SALAH";
+      document.getElementById('jawaban-display').innerText = benar ? "✔ BENAR" : "❌ SALAH (" + soalAktif.total + ")";
       document.getElementById('jawaban-display').style.color = benar ? "var(--success)" : "var(--danger)";
       
       setTimeout(() => {
         document.getElementById('jawaban-display').style.color = "#fff";
         lanjutSoal();
-      }, 800);
+      }, 1200);
     }
 
     function tampilkanRekap() {
